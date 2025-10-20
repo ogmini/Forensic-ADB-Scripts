@@ -3,8 +3,8 @@ File: adb-pull-stat.py
 Description: Recursively collects files and their EXT4 timestamps and hashes from an Android device using ADB. Leverages the find, stat, md5sum, and sha256sum commands. More information can be found at https://github.com/ogmini/Forensic-ADB-Scripts.
 Author: ogmini (https://ogmini.github.io/)
 Created: 2025-10-13
-Modified: 2025-10-13
-Version: 0.1
+Modified: 2025-10-20
+Version: 0.2
 License: MIT
 Usage:
     python adb-pull-stat.py /sdcard/DCIM -t .jpg .png -o output.csv

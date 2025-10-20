@@ -6,4 +6,5 @@ Collection of scripts that I've written to help with my digital forensic researc
 
 | Script | Description | Version |
 | --- | --- | --- |
-| [adb-pull-stat.py](/scripts/adb-pull-stat.py) | Recursively collects files and their EXT4 timestamps and hashes from an Android device. | 0.1 |
+| [adb-pull-stat.py](/scripts/adb-pull-stat.py) | Recursively collects files and their EXT4 timestamps and hashes from an Android device. | 0.2 |
+| [adb-pull-tar.py](/scripts/adb-pull-tar.py) | Generates tar file of a directory and downloads it. | 0.1 |
