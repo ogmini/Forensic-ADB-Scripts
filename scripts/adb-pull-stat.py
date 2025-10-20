@@ -16,28 +16,26 @@ Dependencies:
 
 import subprocess
 import argparse
-
-def run_adb_command(cmd):
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    if result.returncode != 0:
-        print(f"Error {' '.join(cmd)}:\n{result.stderr}")
-        return []
-    return result.stdout.strip().splitlines()
+import fadbfuncs
     
 def main():
     parser = argparse.ArgumentParser(description="TODO")
     parser.add_argument("storage_path", help="TODO")
     parser.add_argument("-o", "--output", default="timestamps.csv", help="Output CSV filename")
     parser.add_argument("-t", "--types", nargs="+", default=["*"], help="File extensions to include, e.g., -t .jpg .png .mp4")
+    parser.add_argument("--wifi", action="store_true", help="Connects to phone over wifi instead of USB")
 
     args = parser.parse_args()
-    
+
+    if args.wifi:
+        fadbfuncs.adb_connect_wifi()
+        
     storage_path = args.storage_path
     output_file = args.output
     extensions = [ext.lower() for ext in args.types]
     
     find_command = ["adb", "shell", "find", storage_path, "-type f"]
-    files = run_adb_command(find_command)
+    files = fadbfuncs.run_adb_command(find_command)
     
     if not files:
         print("No Files Found")
@@ -60,20 +58,23 @@ def main():
         
         for f in filtered_files:
             stat_command = ["adb", "shell", "stat", f'--format=%n,%x,%y,%z', f]
-            stat_output = run_adb_command(stat_command)
+            stat_output = fadbfuncs.run_adb_command(stat_command)
             
             md5sum_command = ["adb", "shell", "md5sum", "-b", f]
-            md5sum_output = run_adb_command(md5sum_command)
+            md5sum_output = fadbfuncs.run_adb_command(md5sum_command)
             
             sha256sum_command = ["adb", "shell", "sha256sum", "-b", f]
-            sha256sum_output = run_adb_command(sha256sum_command)
+            sha256sum_output = fadbfuncs.run_adb_command(sha256sum_command)
             
             if stat_output:
                 f_out.write(stat_output[0] +"," + md5sum_output[0] + "," + sha256sum_output[0] + "\n")
                 print(stat_output[0] + "," + md5sum_output[0] + "," + sha256sum_output[0])
                 
         pull_command = ["adb", "pull", storage_path]
-        run_adb_command(pull_command)
+        fadbfuncs.run_adb_command(pull_command)
+        
+    if args.wifi:
+        fadbfuncs.adb_disconnect_wifi()
         
 if __name__ == "__main__":
     main()
